@@ -1,0 +1,86 @@
+---
+const features = [
+  { icon: '🧩', title: '模块化设计', desc: '按需组合，每个模块独立运行，也能完美协作。' },
+  { icon: '🚀', title: '极速部署', desc: '一键部署到任意云平台，从开发到生产只需几分钟。' },
+  { icon: '🔒', title: '安全优先', desc: '端到端加密，SOC2 认证，企业级安全标准。' },
+  { icon: '📡', title: '实时同步', desc: 'WebSocket 驱动，数据变更毫秒级推送到所有端。' },
+  { icon: '🌍', title: '全球加速', desc: '覆盖全球的 CDN 节点，无论用户在哪都能快速响应。' },
+  { icon: '🛠️', title: '开发者友好', desc: '完善的 SDK、CLI 工具和详尽文档，上手即用。' },
+];
+---
+
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">核心特性</p>
+      <h2 class="section-title">为现代团队而生</h2>
+    </div>
+    <div class="features-grid">
+      {features.map(f => (
+        <div class="feature-item">
+          <span class="feature-icon">{f.icon}</span>
+          <h3>{f.title}</h3>
+          <p>{f.desc}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .features {
+    padding: 6rem 2rem;
+    background: linear-gradient(180deg, transparent, rgba(108,99,255,0.04), transparent);
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+  .section-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-primary-light);
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+  }
+  .feature-item {
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .feature-item:hover {
+    border-color: var(--color-border);
+    background: var(--color-surface);
+  }
+  .feature-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 1rem;
+  }
+  .feature-item h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .feature-item p {
+    font-size: 0.9rem;
+    color: var(--color-muted);
+    line-height: 1.7;
+  }
+</style>

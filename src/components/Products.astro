@@ -1,0 +1,146 @@
+---
+import { categories } from '../data/products';
+---
+
+<section class="products" id="products">
+  <div class="container">
+    <div class="section-header">
+      <p class="section-label">产品矩阵</p>
+      <h2 class="section-title">一套工具，覆盖全场景</h2>
+      <p class="section-desc">从节点部署到 SDK 开发，再到生态 App，BlockLink 覆盖完整链路。</p>
+    </div>
+
+    {categories.map(cat => (
+      <div class="category">
+        <div class="category-header">
+          <span class="category-icon">{cat.icon}</span>
+          <span class="category-label">{cat.label}</span>
+          <span class="category-count">{cat.items.length}</span>
+        </div>
+        <div class="cards-grid">
+          {cat.items.map(p => (
+            <a href={p.href} target={p.href.startsWith('http') ? '_blank' : undefined} rel={p.href.startsWith('http') ? 'noopener noreferrer' : undefined} class="product-card">
+              <div class="card-icon" style={`background: ${p.color}18; color: ${p.color}`}>{p.icon}</div>
+              <div class="card-body">
+                <h3 class="card-name">{p.name}</h3>
+                <p class="card-desc">{p.desc}</p>
+              </div>
+              <div class="card-footer">
+                {p.tags.map(tag => <span class="tag">{tag}</span>)}
+              </div>
+              <span class="card-arrow">→</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .products { padding: 6rem 2rem; }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  .section-header { text-align: center; margin-bottom: 4rem; }
+  .section-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-primary-light);
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+  }
+  .section-desc { color: var(--color-muted); font-size: 1.05rem; max-width: 500px; margin: 0 auto; }
+
+  .category { margin-bottom: 3rem; }
+
+  .category-header {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+    padding: 0.4rem 1rem 0.4rem 0.75rem;
+    background: rgba(108,99,255,0.08);
+    border: 1px solid rgba(108,99,255,0.18);
+    border-radius: 100px;
+  }
+  .category-icon { font-size: 1.1rem; }
+  .category-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-text);
+    letter-spacing: 0.02em;
+  }
+  .category-count {
+    margin-left: 0.25rem;
+    padding: 0.1rem 0.5rem;
+    background: rgba(108,99,255,0.12);
+    border: 1px solid rgba(108,99,255,0.2);
+    border-radius: 100px;
+    font-size: 0.72rem;
+    color: var(--color-primary-light);
+    font-weight: 600;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .product-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 1.5rem;
+    aspect-ratio: 1 / 1;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .product-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 32px rgba(0,0,0,0.3);
+  }
+  .card-icon {
+    width: 46px; height: 46px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+  .card-body { flex: 1; }
+  .card-name { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.35rem; }
+  .card-desc { font-size: 0.78rem; color: var(--color-muted); line-height: 1.6; }
+  .card-footer { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .tag {
+    padding: 0.15rem 0.55rem;
+    background: rgba(255,255,255,0.05);
+    border-radius: 100px;
+    font-size: 0.7rem;
+    color: var(--color-muted);
+  }
+  .card-arrow {
+    position: absolute;
+    top: 1.25rem; right: 1.25rem;
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    transition: transform 0.2s, color 0.2s;
+  }
+  .product-card:hover .card-arrow {
+    transform: translateX(4px);
+    color: var(--color-primary-light);
+  }
+</style>

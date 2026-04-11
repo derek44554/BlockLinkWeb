@@ -1,0 +1,427 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+interface Props {
+  currentSlug?: string;
+}
+const { currentSlug } = Astro.props;
+
+const allDocs = await getCollection('docs');
+
+// 按项目分组
+const groups: Record<string, CollectionEntry<'docs'>[]> = {};
+for (const doc of allDocs) {
+  const [project] = doc.id.split('/');
+  if (!groups[project]) groups[project] = [];
+  groups[project].push(doc);
+}
+for (const key of Object.keys(groups)) {
+  groups[key].sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+}
+
+// 项目定义
+const projects = [
+  { id: 'docs-home', icon: '📚', label: '文档中心', href: '/docs' },
+  { id: 'guide', icon: '🚀', label: '快速开始', color: '#6c63ff' },
+  { id: 'concepts', icon: '💡', label: '核心概念', color: '#00d4aa' },
+  { id: 'blockbase', icon: '🖥️', label: 'BlockBase', color: '#ff6b6b' },
+  { id: 'blocklink', icon: '🐍', label: 'BlockLink Python', color: '#6c63ff' },
+];
+
+// 判断当前所在项目
+const currentProject = currentSlug ? currentSlug.split('/')[0] : null;
+
+// 获取当前项目的文档列表
+const currentProjectDocs = currentProject ? (groups[currentProject] ?? []) : [];
+
+// blockbase 特殊处理：提取 apps 子分组
+const blockbaseAppsDocs = (groups['blockbase'] ?? []).filter(d => d.id.startsWith('blockbase/apps/'));
+const blockbaseMainDocs = (groups['blockbase'] ?? []).filter(d => !d.id.startsWith('blockbase/apps/'));
+const blockbaseSubGroups: Record<string, CollectionEntry<'docs'>[]> = {};
+for (const doc of blockbaseAppsDocs) {
+  const parts = doc.id.split('/');
+  const sub = parts[2] ?? 'other';
+  if (!blockbaseSubGroups[sub]) blockbaseSubGroups[sub] = [];
+  blockbaseSubGroups[sub].push(doc);
+}
+for (const key of Object.keys(blockbaseSubGroups)) {
+  blockbaseSubGroups[key].sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+}
+---
+
+<aside class="sidebar">
+  <!-- Logo -->
+  <a href="/" class="sidebar-logo">
+    <span class="logo-hex">⬡</span>
+    <span class="logo-name">BlockLink</span>
+  </a>
+
+  <!-- 项目切换器 -->
+  <div class="project-switcher">
+    <button class="switcher-btn" id="projectSwitcherBtn">
+      <span class="switcher-icon">{projects.find(p => p.id === currentProject)?.icon ?? '📚'}</span>
+      <span class="switcher-label">{projects.find(p => p.id === currentProject)?.label ?? '选择项目'}</span>
+      <svg class="switcher-arrow" width="12" height="12" viewBox="0 0 16 16" fill="none">
+        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="project-dropdown" id="projectDropdown">
+      {projects.map(project => {
+        let href: string;
+        if (project.id === 'docs-home') {
+          href = '/docs';
+        } else {
+          const projectDocs = groups[project.id] ?? [];
+          const firstDoc = projectDocs[0];
+          href = firstDoc ? `/docs/${firstDoc.id}` : '/docs';
+        }
+        const isActive = project.id === 'docs-home' ? !currentSlug : currentProject === project.id;
+        return (
+          <a
+            href={href}
+            class:list={['dropdown-item', { active: isActive }]}
+          >
+            <span class="item-icon">{project.icon}</span>
+            <span class="item-label">{project.label}</span>
+          </a>
+        );
+      })}
+    </div>
+  </div>
+
+  <!-- 当前项目文档列表 -->
+  <nav class="sidebar-nav">
+    {currentProject === 'guide' && (
+      <div class="doc-list">
+        {(groups['guide'] ?? []).map(doc => {
+          const isActive = doc.id === currentSlug;
+          return (
+            <a href={`/docs/${doc.id}`} class:list={['doc-link', { active: isActive }]}>
+              {doc.data.title}
+            </a>
+          );
+        })}
+      </div>
+    )}
+
+    {currentProject === 'concepts' && (
+      <div class="doc-list">
+        {(groups['concepts'] ?? []).map(doc => {
+          const isActive = doc.id === currentSlug;
+          return (
+            <a href={`/docs/${doc.id}`} class:list={['doc-link', { active: isActive }]}>
+              {doc.data.title}
+            </a>
+          );
+        })}
+      </div>
+    )}
+
+    {currentProject === 'blockbase' && (
+      <div class="doc-list">
+        {blockbaseMainDocs.map(doc => {
+          const isActive = doc.id === currentSlug;
+          return (
+            <a href={`/docs/${doc.id}`} class:list={['doc-link', { active: isActive }]}>
+              {doc.data.title}
+            </a>
+          );
+        })}
+        {Object.keys(blockbaseSubGroups).length > 0 && (
+          <div class="apps-section">
+            <div class="apps-header">
+              <span class="apps-icon">📦</span>
+              <span class="apps-title">Apps</span>
+            </div>
+            <div class="apps-list">
+              {Object.values(blockbaseSubGroups).flat().map(doc => {
+                const isActive = doc.id === currentSlug;
+                return (
+                  <a href={`/docs/${doc.id}`} class:list={['app-link', { active: isActive }]}>
+                    <span class="app-dot"></span>
+                    {doc.data.title}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    )}
+
+    {currentProject === 'blocklink' && (
+      <div class="doc-list">
+        {(groups['blocklink'] ?? []).map(doc => {
+          const isActive = doc.id === currentSlug;
+          return (
+            <a href={`/docs/${doc.id}`} class:list={['doc-link', { active: isActive }]}>
+              {doc.data.title}
+            </a>
+          );
+        })}
+      </div>
+    )}
+  </nav>
+
+  <!-- Footer -->
+  <div class="sidebar-footer">
+    <a href="/" class="back-home">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+        <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      返回主站
+    </a>
+  </div>
+</aside>
+
+<style>
+  .sidebar {
+    width: 256px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--color-border);
+    background: var(--color-bg);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+  }
+
+  /* Logo */
+  .sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1rem 0.75rem;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--color-text);
+    transition: opacity 0.2s;
+  }
+  .sidebar-logo:hover {
+    opacity: 0.8;
+  }
+  .logo-hex {
+    color: var(--color-primary);
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+  .logo-name {
+    letter-spacing: -0.01em;
+  }
+
+  /* 项目切换器 */
+  .project-switcher {
+    padding: 0 1rem 1rem;
+    border-bottom: 1px solid var(--color-border);
+    position: relative;
+  }
+  .switcher-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0.8rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .switcher-btn:hover {
+    border-color: var(--color-primary);
+    background: rgba(108, 99, 255, 0.05);
+  }
+  .switcher-icon {
+    font-size: 1.1rem;
+  }
+  .switcher-label {
+    flex: 1;
+    text-align: left;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+  .switcher-arrow {
+    color: var(--color-muted);
+    transition: transform 0.2s;
+  }
+  .switcher-btn.open .switcher-arrow {
+    transform: rotate(180deg);
+  }
+
+  .project-dropdown {
+    position: absolute;
+    top: calc(100% - 4px);
+    left: 1rem;
+    right: 1rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    padding: 0.4rem;
+    display: none;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  }
+  .project-dropdown.open {
+    display: block;
+  }
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    transition: background 0.15s, color 0.15s;
+  }
+  .dropdown-item:hover {
+    background: rgba(108, 99, 255, 0.08);
+    color: var(--color-text);
+  }
+  .dropdown-item.active {
+    background: rgba(108, 99, 255, 0.15);
+    color: var(--color-primary-light);
+  }
+  .item-icon {
+    font-size: 1rem;
+  }
+  .item-label {
+    font-weight: 500;
+  }
+
+  /* 文档列表 */
+  .sidebar-nav {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    overflow-y: auto;
+  }
+  .doc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .doc-link {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    transition: color 0.15s, background 0.15s;
+  }
+  .doc-link:hover {
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .doc-link.active {
+    color: var(--color-primary-light);
+    background: rgba(108, 99, 255, 0.1);
+    font-weight: 500;
+  }
+
+  /* Apps 子分组 */
+  .apps-section {
+    margin-top: 1rem;
+    background: rgba(255, 107, 107, 0.04);
+    border: 1px solid rgba(255, 107, 107, 0.15);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .apps-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.85rem;
+    background: rgba(255, 107, 107, 0.08);
+    border-bottom: 1px solid rgba(255, 107, 107, 0.1);
+  }
+  .apps-icon {
+    font-size: 0.9rem;
+  }
+  .apps-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #ff6b6b;
+  }
+  .apps-list {
+    padding: 0.4rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+  .app-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.45rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    color: var(--color-muted);
+    transition: color 0.15s, background 0.15s;
+  }
+  .app-link:hover {
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .app-link.active {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.12);
+    font-weight: 500;
+  }
+  .app-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.4;
+    flex-shrink: 0;
+  }
+  .app-link.active .app-dot {
+    opacity: 1;
+  }
+
+  /* Footer */
+  .sidebar-footer {
+    padding: 0.75rem 1rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .back-home {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    color: var(--color-muted);
+    padding: 0.35rem 0.5rem;
+    border-radius: 6px;
+    transition: color 0.15s, background 0.15s;
+  }
+  .back-home:hover {
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .back-home svg {
+    opacity: 0.6;
+  }
+</style>
+
+<script>
+  const btn = document.getElementById('projectSwitcherBtn');
+  const dropdown = document.getElementById('projectDropdown');
+
+  btn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    btn.classList.toggle('open');
+    dropdown?.classList.toggle('open');
+  });
+
+  document.addEventListener('click', () => {
+    btn?.classList.remove('open');
+    dropdown?.classList.remove('open');
+  });
+</script>

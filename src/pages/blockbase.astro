@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout title="BlockBase — 开箱即用的核心节点服务" description="BlockBase 是 BlockLink 生态的核心节点实现，部署后即成为你私有网络中的服务节点。">
+  <Navbar />
+  <main>
+    <section class="hero">
+      <span class="icon">🖥️</span>
+      <h1>BlockBase</h1>
+      <p>开箱即用的核心节点服务，部署后即可接入 BlockLink 生态</p>
+      <div class="links">
+        <a href="/docs/guide/getting-started" class="btn btn-primary">开始部署</a>
+        <a href="/docs/blockbase/overview" class="btn btn-outline">文档</a>
+        <a href="https://github.com/derek44554/BlockBase" target="_blank" rel="noopener noreferrer" class="btn btn-outline">GitHub</a>
+      </div>
+    </section>
+
+    <section class="modules">
+      <h2>功能模块</h2>
+      <div class="module-list">
+        <a href="/docs/blockbase/apps/block" class="module-card">
+          <span class="module-icon">📦</span>
+          <span class="module-name">Block</span>
+          <span class="module-desc">块存储与检索</span>
+        </a>
+        <a href="/docs/blockbase/apps/ipfs" class="module-card">
+          <span class="module-icon">🌐</span>
+          <span class="module-name">IPFS</span>
+          <span class="module-desc">IPFS 文件存储</span>
+        </a>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  main { padding-top: 64px; }
+
+  .hero {
+    padding: 5rem 2rem;
+    text-align: center;
+  }
+  .icon { font-size: 3rem; display: block; margin-bottom: 1rem; }
+  h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .hero p { color: var(--color-muted); margin-bottom: 1.5rem; }
+  .links { display: flex; gap: 1.5rem; justify-content: center; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--color-primary);
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background: var(--color-primary-light);
+    transform: translateY(-2px);
+  }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+  }
+  .btn-outline:hover {
+    border-color: var(--color-primary);
+    background: rgba(108, 99, 255, 0.08);
+  }
+
+  .modules {
+    padding: 3rem 2rem 6rem;
+    text-align: center;
+  }
+  .modules h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+  .module-list {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
+  .module-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.5rem 2.5rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    transition: border-color 0.2s;
+  }
+  .module-card:hover { border-color: var(--color-primary); }
+  .module-icon { font-size: 1.75rem; }
+  .module-name { font-weight: 600; }
+  .module-desc { font-size: 0.85rem; color: var(--color-muted); }
+</style>

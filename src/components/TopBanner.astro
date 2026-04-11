@@ -1,0 +1,103 @@
+---
+const command = 'bash <(curl -fsSL https://raw.githubusercontent.com/derek44554/block_shell/main/start.sh)';
+---
+
+<div class="top-banner" id="top-banner">
+  <span class="banner-label">一键部署</span>
+  <div class="command-box">
+    <span class="prompt">$</span>
+    <code id="deploy-cmd">{command}</code>
+    <button class="copy-btn" onclick="copyCmd()">复制</button>
+  </div>
+  <button class="banner-close" onclick="document.getElementById('top-banner').style.display='none'">✕</button>
+</div>
+
+<script>
+  function copyCmd() {
+    const cmd = document.getElementById('deploy-cmd').innerText;
+    navigator.clipboard.writeText(cmd).then(() => {
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = '✓ 已复制';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = '复制';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+<style>
+  .top-banner {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 200;
+    height: 44px;
+    background: linear-gradient(90deg, #0f0f1a, #1a1030, #0f0f1a);
+    border-bottom: 1px solid rgba(108, 99, 255, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0 3rem;
+  }
+  .banner-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-primary-light);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .command-box {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid rgba(108,99,255,0.2);
+    border-radius: 6px;
+    padding: 0.2rem 0.6rem;
+  }
+  .prompt {
+    color: #6c63ff;
+    font-family: monospace;
+    font-size: 0.8rem;
+    user-select: none;
+  }
+  .command-box code {
+    font-family: 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 0.8rem;
+    color: #00d4aa;
+    white-space: nowrap;
+  }
+  .copy-btn {
+    padding: 0.15rem 0.55rem;
+    background: rgba(108,99,255,0.15);
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: 4px;
+    color: #8b85ff;
+    font-size: 0.72rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+  .copy-btn:hover, .copy-btn.copied {
+    background: rgba(108,99,255,0.35);
+    color: #fff;
+  }
+  .banner-close {
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: #555570;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: color 0.2s;
+  }
+  .banner-close:hover { color: #e8e8f0; }
+  @media (max-width: 600px) {
+    .banner-label { display: none; }
+    .command-box code { font-size: 0.7rem; max-width: 200px; overflow: hidden; text-overflow: ellipsis; }
+  }
+</style>

@@ -1,0 +1,43 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+const { title = 'BlockLink', description = 'A suite of powerful tools to connect your workflow.' } = Astro.props;
+---
+
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <style is:global>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --color-bg: #0a0a0f;
+        --color-surface: #13131a;
+        --color-border: #1e1e2e;
+        --color-primary: #6c63ff;
+        --color-primary-light: #8b85ff;
+        --color-accent: #00d4aa;
+        --color-text: #e8e8f0;
+        --color-muted: #8888a8;
+        --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      }
+      html { scroll-behavior: smooth; }
+      body {
+        background: var(--color-bg);
+        color: var(--color-text);
+        font-family: var(--font-sans);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      a { color: inherit; text-decoration: none; }
+    </style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

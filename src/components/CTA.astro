@@ -1,0 +1,83 @@
+---
+---
+
+<section class="cta">
+  <div class="cta-inner">
+    <div class="cta-glow"></div>
+    <h2>准备好开始了吗？</h2>
+    <p>5 分钟内完成第一个集成，立即上手。</p>
+    <div class="cta-actions">
+      <a href="/docs/guide/getting-started" class="btn-cta">开始部署</a>
+      <a href="#" class="btn-link">联系销售团队 →</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta {
+    padding: 6rem 2rem;
+  }
+  .cta-inner {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 24px;
+    overflow: hidden;
+  }
+  .cta-glow {
+    position: absolute;
+    width: 400px; height: 400px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.12;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .cta-inner h2 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  .cta-inner p {
+    color: var(--color-muted);
+    font-size: 1.05rem;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  .cta-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+  }
+  .btn-cta {
+    padding: 0.75rem 2rem;
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background 0.2s, transform 0.15s;
+    box-shadow: 0 0 30px rgba(108, 99, 255, 0.4);
+  }
+  .btn-cta:hover {
+    background: var(--color-primary-light);
+    transform: translateY(-2px);
+  }
+  .btn-link {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+    transition: color 0.2s;
+  }
+  .btn-link:hover { color: var(--color-text); }
+</style>
