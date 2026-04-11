@@ -5,6 +5,9 @@ import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
   output: 'static',
+  build: {
+    format: 'file',
+  },
   trailingSlash: 'never',
   integrations: [react()],
   adapter: cloudflare(),
