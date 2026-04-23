@@ -76,7 +76,7 @@ BlockBase/
 
 ```bash
 docker network create block
-docker-compose up -d
+docker compose up -d
 ```
 
 ### 4. 验证部署
@@ -90,8 +90,8 @@ docker-compose up -d
 ## 更新重新部署
 
 ```bash
-docker-compose down
-docker-compose up -d --build
+docker compose down
+docker compose up -d --build
 ```
 
 > 请妥善保管所有私钥文件，切勿上传到公共仓库或分享给他人。
