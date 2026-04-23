@@ -1,13 +1,30 @@
 ---
-import { categories } from '../data/products';
+import { getCategories } from '../data/products';
+import type { Locale } from '../i18n/site';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+const categories = getCategories(locale);
+const isZh = locale === 'zh';
+
+const copy = {
+  sectionLabel: isZh ? '产品矩阵' : 'Product Matrix',
+  sectionTitle: isZh ? '一套工具，覆盖全场景' : 'One Suite, Full Coverage',
+  sectionDesc: isZh
+    ? '从节点部署到 SDK 开发，再到生态 App，BlockLink 覆盖完整链路。'
+    : 'From node deployment to SDK development and ecosystem apps, BlockLink covers the full lifecycle.',
+};
 ---
 
 <section class="products" id="products">
   <div class="container">
     <div class="section-header">
-      <p class="section-label">产品矩阵</p>
-      <h2 class="section-title">一套工具，覆盖全场景</h2>
-      <p class="section-desc">从节点部署到 SDK 开发，再到生态 App，BlockLink 覆盖完整链路。</p>
+      <p class="section-label">{copy.sectionLabel}</p>
+      <h2 class="section-title">{copy.sectionTitle}</h2>
+      <p class="section-desc">{copy.sectionDesc}</p>
     </div>
 
     {categories.map(cat => (

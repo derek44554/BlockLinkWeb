@@ -1,14 +1,23 @@
 ---
+import type { Locale } from '../i18n/site';
+import { pathWithLocale } from '../i18n/site';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+const isZh = locale === 'zh';
 ---
 
 <section class="cta">
   <div class="cta-inner">
     <div class="cta-glow"></div>
-    <h2>准备好开始了吗？</h2>
-    <p>5 分钟内完成第一个集成，立即上手。</p>
+    <h2>{isZh ? '准备好开始了吗？' : 'Ready to Get Started?'}</h2>
+    <p>{isZh ? '5 分钟内完成第一个集成，立即上手。' : 'Complete your first integration in 5 minutes.'}</p>
     <div class="cta-actions">
-      <a href="/docs/guide/getting-started" class="btn-cta">开始部署</a>
-      <a href="#" class="btn-link">联系销售团队 →</a>
+      <a href={pathWithLocale(locale, '/docs/guide/getting-started')} class="btn-cta">{isZh ? '开始部署' : 'Start Deploying'}</a>
+      <a href="#" class="btn-link">{isZh ? '联系销售团队 →' : 'Contact Sales →'}</a>
     </div>
   </div>
 </section>

@@ -1,4 +1,27 @@
 ---
+import type { Locale } from '../i18n/site';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
+const isZh = locale === 'zh';
+
+const copy = {
+  badge: isZh ? '🚀 全新发布 v0.1.0' : '🚀 New Release v0.1.0',
+  titleLine1: isZh ? '连接一切，' : 'Connect Everything,',
+  titleLine2: isZh ? '构建无限可能' : 'Build Without Limits',
+  desc: isZh
+    ? 'BlockLink 是一套面向开发者和团队的工具集，帮助你快速集成、自动化工作流，让每一个模块都能无缝协作。'
+    : 'BlockLink is a tool suite for developers and teams to integrate faster, automate workflows, and make every module work together seamlessly.',
+  deployLabel: isZh ? '一键部署' : 'One-Command Deploy',
+  copyBtn: isZh ? '复制' : 'Copy',
+  copiedBtn: isZh ? '✓ 已复制' : '✓ Copied',
+  hint: isZh ? '支持 Ubuntu 20.04+ · Debian 11+ · CentOS 8+' : 'Supports Ubuntu 20.04+ · Debian 11+ · CentOS 8+',
+  apps: isZh ? '生态 App' : 'Ecosystem Apps',
+  devs: isZh ? '开发者' : 'Developers',
+};
 ---
 
 <section class="hero" id="hero">
@@ -8,25 +31,24 @@
     <div class="glow glow-2"></div>
   </div>
   <div class="hero-content">
-    <div class="badge">🚀 全新发布 v0.1.0</div>
+    <div class="badge">{copy.badge}</div>
     <h1 class="hero-title">
-      连接一切，<br />
-      <span class="gradient-text">构建无限可能</span>
+      {copy.titleLine1}<br />
+      <span class="gradient-text">{copy.titleLine2}</span>
     </h1>
     <p class="hero-desc">
-      BlockLink 是一套面向开发者和团队的工具集，帮助你快速集成、自动化工作流，
-      让每一个模块都能无缝协作。
+      {copy.desc}
     </p>
     <div class="deploy-wrap">
       <div class="deploy-box">
-        <span class="deploy-label">一键部署</span>
+        <span class="deploy-label">{copy.deployLabel}</span>
         <div class="deploy-command">
           <span class="prompt">$</span>
           <code id="deploy-cmd">bash &lt;(curl -fsSL https://raw.githubusercontent.com/derek44554/block_shell/main/start.sh)</code>
         </div>
-        <button class="copy-btn" id="copy-btn">复制</button>
+        <button class="copy-btn" id="copy-btn" data-copy-label={copy.copyBtn} data-copied-label={copy.copiedBtn}>{copy.copyBtn}</button>
       </div>
-      <p class="deploy-hint">支持 Ubuntu 20.04+ · Debian 11+ · CentOS 8+</p>
+      <p class="deploy-hint">{copy.hint}</p>
     </div>
     <div class="hero-stats">
       <div class="stat">
@@ -36,12 +58,12 @@
       <div class="divider"></div>
       <div class="stat">
         <span class="stat-num">5</span>
-        <span class="stat-label">生态 App</span>
+        <span class="stat-label">{copy.apps}</span>
       </div>
       <div class="divider"></div>
       <div class="stat">
         <span class="stat-num">1</span>
-        <span class="stat-label">开发者</span>
+        <span class="stat-label">{copy.devs}</span>
       </div>
     </div>
   </div>
@@ -120,43 +142,6 @@
     max-width: 560px;
     margin: 0 auto 2.5rem;
     line-height: 1.8;
-  }
-  .hero-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 3.5rem;
-  }
-  .btn-cta {
-    padding: 0.75rem 2rem;
-    background: var(--color-primary);
-    color: #fff;
-    border-radius: 10px;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-    box-shadow: 0 0 30px rgba(108, 99, 255, 0.4);
-  }
-  .btn-cta:hover {
-    background: var(--color-primary-light);
-    transform: translateY(-2px);
-    box-shadow: 0 0 40px rgba(108, 99, 255, 0.6);
-  }
-  .btn-outline {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.75rem;
-    border: 1px solid var(--color-border);
-    border-radius: 10px;
-    font-size: 1rem;
-    color: var(--color-text);
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .btn-outline:hover {
-    border-color: var(--color-primary);
-    background: rgba(108, 99, 255, 0.08);
   }
   .deploy-wrap {
     display: flex;
@@ -258,29 +243,50 @@
   .stat { text-align: center; }
   .stat-num {
     display: block;
-    font-size: 1.6rem;
+    font-size: 1.35rem;
     font-weight: 700;
     color: var(--color-text);
   }
   .stat-label {
-    font-size: 0.85rem;
+    display: block;
+    font-size: 0.8rem;
     color: var(--color-muted);
+    margin-top: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
   .divider {
     width: 1px;
     height: 40px;
     background: var(--color-border);
   }
+
+  @media (max-width: 768px) {
+    .hero { padding-top: 7rem; }
+    .hero-stats { gap: 1rem; }
+    .deploy-label,
+    .copy-btn { font-size: 0.75rem; padding: 0 0.8rem; }
+    .deploy-command { padding: 0 0.75rem; }
+    .deploy-command code { font-size: 0.78rem; }
+  }
 </style>
 
 <script>
-  const cmd = document.getElementById('deploy-cmd')!.innerText;
-  const btn = document.getElementById('copy-btn')!;
+  const copyBtn = document.getElementById('copy-btn');
+  const deployCmd = document.getElementById('deploy-cmd');
 
-  btn.addEventListener('click', () => {
-    navigator.clipboard.writeText(cmd).then(() => {
-      btn.textContent = '✓ 已复制';
-      setTimeout(() => btn.textContent = '复制', 2000);
-    });
+  copyBtn?.addEventListener('click', async () => {
+    try {
+      const cmd = deployCmd?.textContent ?? '';
+      await navigator.clipboard.writeText(cmd);
+      const copiedLabel = copyBtn.dataset.copiedLabel ?? '✓ Copied';
+      const copyLabel = copyBtn.dataset.copyLabel ?? 'Copy';
+      copyBtn.textContent = copiedLabel;
+      setTimeout(() => {
+        copyBtn.textContent = copyLabel;
+      }, 1800);
+    } catch {
+      // Ignore clipboard errors on unsupported environments.
+    }
   });
 </script>

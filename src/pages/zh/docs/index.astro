@@ -1,14 +1,14 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import DocsSidebar from '../../components/DocsSidebar.astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import DocsSidebar from '../../../components/DocsSidebar.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
-import { getCategories } from '../../data/products';
+import { getCategories } from '../../../data/products';
 
-const locale = 'en';
-const allDocs = await getCollection('docsEn');
+const locale = 'zh';
+const allDocs = await getCollection('docsZh');
 const categories = getCategories(locale);
 
-const groups: Record<string, CollectionEntry<'docsEn'>[]> = {};
+const groups: Record<string, CollectionEntry<'docsZh'>[]> = {};
 for (const doc of allDocs) {
   const [product] = doc.id.split('/');
   if (!groups[product]) groups[product] = [];
@@ -18,7 +18,7 @@ for (const key of Object.keys(groups)) {
   groups[key].sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
 }
 
-const firstByProduct: Record<string, CollectionEntry<'docsEn'>> = {};
+const firstByProduct: Record<string, CollectionEntry<'docsZh'>> = {};
 for (const [product, docs] of Object.entries(groups)) {
   firstByProduct[product] = docs[0];
 }
@@ -28,7 +28,7 @@ const docProducts = categories
   .map((item) => ({
     ...item,
     docsHref: item.docProject && firstByProduct[item.docProject]
-      ? `/docs/${firstByProduct[item.docProject].id}`
+      ? `/zh/docs/${firstByProduct[item.docProject].id}`
       : null,
   }))
   .filter((p) => p.docsHref);
@@ -36,22 +36,22 @@ const docProducts = categories
 const sortedDocs = [...allDocs].sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
 ---
 
-<BaseLayout title="Documentation Center — BlockLink" locale="en">
+<BaseLayout title="文档中心 — BlockLink" locale="zh">
   <div class="docs-home">
-    <DocsSidebar locale="en" docsCollection="docsEn" />
+    <DocsSidebar locale="zh" docsCollection="docsZh" />
 
     <main class="home-main">
       <div class="hero">
-        <div class="hero-badge">Documentation</div>
-        <h1>BlockLink <span class="gradient-text">Developer Docs</span></h1>
-        <p class="hero-desc">Explore the complete BlockLink docs, from quick start to advanced configuration.</p>
+        <div class="hero-badge">文档中心</div>
+        <h1>BlockLink <span class="gradient-text">开发文档</span></h1>
+        <p class="hero-desc">探索 BlockLink 生态的完整文档，从快速上手到深度配置，一切尽在此处。</p>
         <div class="hero-actions">
-          <a href="/docs/guide/getting-started" class="btn-start">
-            🚀 Quick Start
+          <a href="/zh/docs/guide/getting-started" class="btn-start">
+            🚀 快速开始
             <span class="btn-arrow">→</span>
           </a>
           <a href="https://www.bilibili.com/video/BV18PwezvE6w/" target="_blank" rel="noopener" class="btn-video">
-            📺 Video Intro
+            📺 视频介绍
           </a>
         </div>
       </div>
@@ -72,12 +72,12 @@ const sortedDocs = [...allDocs].sort((a, b) => (a.data.order ?? 99) - (b.data.or
       </div>
 
       <div class="quick-links">
-        <h2>Quick Navigation</h2>
+        <h2>快速导航</h2>
         <div class="links-grid">
           {sortedDocs.map(doc => {
             const [product] = doc.id.split('/');
             return (
-              <a href={`/docs/${doc.id}`} class="quick-link">
+              <a href={`/zh/docs/${doc.id}`} class="quick-link">
                 <span class="ql-product">{product}</span>
                 <span class="ql-title">{doc.data.title}</span>
                 {doc.data.description && <span class="ql-desc">{doc.data.description}</span>}

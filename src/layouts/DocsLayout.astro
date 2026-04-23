@@ -1,21 +1,38 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import DocsSidebar from '../components/DocsSidebar.astro';
+import type { Locale } from '../i18n/site';
 
 interface Props {
   title: string;
   description?: string;
   currentSlug: string;
+  locale?: Locale;
+  currentPath?: string;
+  docsCollection?: 'docsEn' | 'docsZh';
 }
 
-const { title, description, currentSlug } = Astro.props;
+const {
+  title,
+  description,
+  currentSlug,
+  locale = 'en',
+  currentPath = `/docs/${currentSlug}`,
+  docsCollection = locale === 'zh' ? 'docsZh' : 'docsEn',
+} = Astro.props;
+
+const docsTitleSuffix = locale === 'zh' ? 'BlockLink 文档' : 'BlockLink Docs';
 ---
 
-<BaseLayout title={`${title} — BlockLink Docs`} description={description}>
+<BaseLayout title={`${title} — ${docsTitleSuffix}`} description={description} locale={locale}>
   <div class="docs-root">
-    <DocsSidebar currentSlug={currentSlug} />
+    <DocsSidebar
+      currentSlug={currentSlug}
+      locale={locale}
+      currentPath={currentPath}
+      docsCollection={docsCollection}
+    />
 
-    <!-- Main content -->
     <main class="doc-main">
       <article class="doc-content prose">
         <slot />
@@ -37,7 +54,6 @@ const { title, description, currentSlug } = Astro.props;
     max-width: 860px;
   }
 
-  /* Prose styles */
   .prose :global(h1) {
     font-size: 2rem;
     font-weight: 700;

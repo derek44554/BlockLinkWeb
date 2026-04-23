@@ -1,23 +1,42 @@
 ---
-import { categories } from '../data/products';
+import { getCategories } from '../data/products';
+import type { Locale } from '../i18n/site';
+import { pathWithLocale, switchLocalePath } from '../i18n/site';
 
+interface Props {
+  locale?: Locale;
+  currentPath?: string;
+}
+
+const { locale = 'en', currentPath = '/' } = Astro.props;
+
+const categories = getCategories(locale);
+const isZh = locale === 'zh';
 const navLinks = [
-  { label: '文档', href: '/docs' },
+  { label: isZh ? '文档' : 'Docs', href: pathWithLocale(locale, '/docs') },
 ];
+
+const copy = {
+  products: isZh ? '产品' : 'Products',
+  deploy: isZh ? '开始部署' : 'Get Started',
+  langLabel: isZh ? 'EN' : '中文',
+};
+
+const alternateLocale: Locale = isZh ? 'en' : 'zh';
+const alternatePath = switchLocalePath(alternateLocale, currentPath);
 ---
 
 <nav class="navbar">
   <div class="nav-inner">
-    <a href="/" class="logo">
+    <a href={pathWithLocale(locale, '/')} class="logo">
       <span class="logo-icon">⬡</span>
       <span class="logo-text">BlockLink</span>
     </a>
 
     <ul class="nav-links">
-      <!-- 产品下拉 -->
       <li class="has-dropdown">
         <button class="nav-btn">
-          产品
+          {copy.products}
           <svg class="chevron" width="12" height="12" viewBox="0 0 12 12" fill="none">
             <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -51,7 +70,8 @@ const navLinks = [
     </ul>
 
     <div class="nav-actions">
-      <a href="/docs/guide/getting-started" class="btn-primary">开始部署</a>
+      <a href={alternatePath} class="lang-btn">{copy.langLabel}</a>
+      <a href={pathWithLocale(locale, '/docs/guide/getting-started')} class="btn-primary">{copy.deploy}</a>
     </div>
   </div>
 </nav>
@@ -119,7 +139,6 @@ const navLinks = [
   }
   .has-dropdown:hover .chevron { transform: rotate(180deg); }
 
-  /* Dropdown */
   .has-dropdown { position: relative; }
   .dropdown {
     position: absolute;
@@ -200,15 +219,31 @@ const navLinks = [
     text-overflow: ellipsis;
   }
 
-  .nav-actions { margin-left: auto; }
+  .nav-actions {
+    margin-left: auto;
+    display: flex;
+    gap: 0.6rem;
+    align-items: center;
+  }
+  .lang-btn,
   .btn-primary {
     padding: 0.45rem 1.1rem;
-    background: var(--color-primary);
-    color: #fff;
     border-radius: 8px;
     font-size: 0.9rem;
     font-weight: 500;
     transition: background 0.2s, transform 0.1s;
+  }
+  .lang-btn {
+    border: 1px solid var(--color-border);
+    color: var(--color-muted);
+  }
+  .lang-btn:hover {
+    color: var(--color-text);
+    background: rgba(255,255,255,0.05);
+  }
+  .btn-primary {
+    background: var(--color-primary);
+    color: #fff;
   }
   .btn-primary:hover {
     background: var(--color-primary-light);
@@ -221,9 +256,9 @@ const navLinks = [
 </style>
 
 <script>
-  const item = document.querySelector('.has-dropdown') as HTMLElement;
-  const dropdown = item?.querySelector('.dropdown') as HTMLElement;
-  let closeTimer: ReturnType<typeof setTimeout>;
+  const item = document.querySelector('.has-dropdown');
+  const dropdown = item ? item.querySelector('.dropdown') : null;
+  let closeTimer;
 
   function open() {
     clearTimeout(closeTimer);
@@ -236,8 +271,10 @@ const navLinks = [
     }, 150);
   }
 
-  item?.addEventListener('mouseenter', open);
-  item?.addEventListener('mouseleave', close);
-  dropdown?.addEventListener('mouseenter', open);
-  dropdown?.addEventListener('mouseleave', close);
+  if (item && dropdown) {
+    item.addEventListener('mouseenter', open);
+    item.addEventListener('mouseleave', close);
+    dropdown.addEventListener('mouseenter', open);
+    dropdown.addEventListener('mouseleave', close);
+  }
 </script>

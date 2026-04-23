@@ -1,40 +1,40 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Navbar from '../components/Navbar.astro';
-import Footer from '../components/Footer.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Navbar from '../../components/Navbar.astro';
+import Footer from '../../components/Footer.astro';
 ---
 
-<BaseLayout title="BlockBase — Out-of-the-box Core Node Service" description="BlockBase is the core node implementation in the BlockLink ecosystem." locale="en">
-  <Navbar locale="en" currentPath="/blockbase" />
+<BaseLayout title="BlockBase — 开箱即用的核心节点服务" description="BlockBase 是 BlockLink 生态的核心节点实现，部署后即成为你私有网络中的服务节点。" locale="zh">
+  <Navbar locale="zh" currentPath="/blockbase" />
   <main>
     <section class="hero">
       <span class="icon">🖥️</span>
       <h1>BlockBase</h1>
-      <p>An out-of-the-box core node service that plugs into the BlockLink ecosystem right after deployment.</p>
+      <p>开箱即用的核心节点服务，部署后即可接入 BlockLink 生态</p>
       <div class="links">
-        <a href="/docs/guide/getting-started" class="btn btn-primary">Get Started</a>
-        <a href="/docs/blockbase/overview" class="btn btn-outline">Docs</a>
+        <a href="/zh/docs/guide/getting-started" class="btn btn-primary">开始部署</a>
+        <a href="/zh/docs/blockbase/overview" class="btn btn-outline">文档</a>
         <a href="https://github.com/derek44554/BlockBase" target="_blank" rel="noopener noreferrer" class="btn btn-outline">GitHub</a>
       </div>
     </section>
 
     <section class="modules">
-      <h2>Modules</h2>
+      <h2>功能模块</h2>
       <div class="module-list">
-        <a href="/docs/blockbase/apps/block" class="module-card">
+        <a href="/zh/docs/blockbase/apps/block" class="module-card">
           <span class="module-icon">📦</span>
           <span class="module-name">Block</span>
-          <span class="module-desc">Block storage and retrieval</span>
+          <span class="module-desc">块存储与检索</span>
         </a>
-        <a href="/docs/blockbase/apps/ipfs" class="module-card">
+        <a href="/zh/docs/blockbase/apps/ipfs" class="module-card">
           <span class="module-icon">🌐</span>
           <span class="module-name">IPFS</span>
-          <span class="module-desc">IPFS file storage integration</span>
+          <span class="module-desc">IPFS 文件存储</span>
         </a>
       </div>
     </section>
   </main>
-  <Footer locale="en" />
+  <Footer locale="zh" />
 </BaseLayout>
 
 <style>

@@ -1,9 +1,17 @@
 ---
+import type { Locale } from '../i18n/site';
+import { pathWithLocale } from '../i18n/site';
+
+interface Props {
+  locale?: Locale;
+}
+
+const { locale = 'en' } = Astro.props;
 ---
 
 <footer class="footer">
   <div class="container">
-    <a href="/" class="logo">
+    <a href={pathWithLocale(locale, '/')} class="logo">
       <span class="logo-icon">⬡</span>
       <span>BlockLink</span>
     </a>
@@ -37,13 +45,4 @@
     font-size: 0.82rem;
     color: var(--color-muted);
   }
-  .github {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.85rem;
-    color: var(--color-muted);
-    transition: color 0.2s;
-  }
-  .github:hover { color: var(--color-text); }
 </style>
