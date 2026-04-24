@@ -57,9 +57,40 @@ const appsLabel = 'Apps';
 const backHomeLabel = isZh ? '返回主站' : 'Back to Main Site';
 const languageLabel = isZh ? 'EN' : '中文';
 const languageHref = pathWithLocale(isZh ? 'en' : 'zh', currentSlug ? `/docs/${currentSlug}` : '/docs');
+const currentProjectMeta = projects.find((project) =>
+  project.id === 'docs-home' ? !currentSlug : project.id === currentProject
+);
+const mobileMenuLabel = isZh ? '文档导航' : 'Docs Navigation';
+const closeLabel = isZh ? '关闭' : 'Close';
 ---
 
+<button
+  class="mobile-sidebar-toggle"
+  id="mobileDocsToggle"
+  type="button"
+  aria-controls="docsSidebar"
+  aria-expanded="false"
+  aria-label={mobileMenuLabel}
+>
+  <span class="mobile-toggle-copy">
+    <span class="mobile-toggle-eyebrow">{mobileMenuLabel}</span>
+    <span class="mobile-toggle-title">
+      {currentProjectMeta?.icon ?? '📚'} {currentProjectMeta?.label ?? projectDefaultLabel}
+    </span>
+  </span>
+  <span class="mobile-toggle-action">{isZh ? '查看目录' : 'Open'}</span>
+</button>
+
+<div class="sidebar-backdrop" id="docsSidebarBackdrop"></div>
+
 <aside class="sidebar">
+  <div class="mobile-sidebar-header">
+    <div class="mobile-sidebar-title">{mobileMenuLabel}</div>
+    <button class="mobile-close-btn" id="mobileDocsClose" type="button" aria-label={closeLabel}>
+      ✕
+    </button>
+  </div>
+
   <a href={pathWithLocale(locale, '/')} class="sidebar-logo">
     <span class="logo-hex">⬡</span>
     <span class="logo-name">BlockLink</span>
@@ -182,6 +213,57 @@ const languageHref = pathWithLocale(isZh ? 'en' : 'zh', currentSlug ? `/docs/${c
 </aside>
 
 <style>
+  :global(body.docs-nav-open) {
+    overflow: hidden;
+  }
+
+  .mobile-sidebar-toggle,
+  .sidebar-backdrop,
+  .mobile-sidebar-header {
+    display: none;
+  }
+
+  .mobile-sidebar-toggle {
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem 1rem;
+    border: 0;
+    border-bottom: 1px solid var(--color-border);
+    background: rgba(10, 10, 15, 0.92);
+    color: var(--color-text);
+    backdrop-filter: blur(14px);
+    text-align: left;
+    position: sticky;
+    top: 0;
+    z-index: 25;
+  }
+  .mobile-toggle-copy {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .mobile-toggle-eyebrow {
+    font-size: 0.72rem;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .mobile-toggle-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mobile-toggle-action {
+    flex-shrink: 0;
+    font-size: 0.82rem;
+    color: var(--color-primary-light);
+  }
+
   .sidebar {
     width: 256px;
     flex-shrink: 0;
@@ -217,6 +299,30 @@ const languageHref = pathWithLocale(isZh ? 'en' : 'zh', currentSlug ? `/docs/${c
   }
   .logo-name {
     letter-spacing: -0.01em;
+  }
+
+  .mobile-sidebar-header {
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1rem 0.25rem;
+  }
+  .mobile-sidebar-title {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .mobile-close-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-size: 1rem;
+    cursor: pointer;
   }
 
   .project-switcher {
@@ -396,15 +502,89 @@ const languageHref = pathWithLocale(isZh ? 'en' : 'zh', currentSlug ? `/docs/${c
   .back-home:hover {
     color: var(--color-text);
   }
+
+  @media (max-width: 768px) {
+    .mobile-sidebar-toggle,
+    .sidebar-backdrop,
+    .mobile-sidebar-header {
+      display: flex;
+    }
+
+    .sidebar-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 39;
+    }
+    .sidebar-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: min(82vw, 320px);
+      max-width: 100%;
+      height: 100dvh;
+      transform: translateX(-100%);
+      transition: transform 0.22s ease;
+      z-index: 40;
+      box-shadow: 18px 0 36px rgba(0, 0, 0, 0.32);
+    }
+    .sidebar.open {
+      transform: translateX(0);
+    }
+  }
 </style>
 
 <script>
   const switcherBtn = document.getElementById('projectSwitcherBtn');
   const dropdown = document.getElementById('projectDropdown');
+  const sidebar = document.querySelector('.sidebar');
+  const mobileToggle = document.getElementById('mobileDocsToggle');
+  const mobileClose = document.getElementById('mobileDocsClose');
+  const backdrop = document.getElementById('docsSidebarBackdrop');
+  const sidebarLinks = sidebar?.querySelectorAll('a');
+
+  const closeSidebar = () => {
+    sidebar?.classList.remove('open');
+    backdrop?.classList.remove('open');
+    mobileToggle?.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('docs-nav-open');
+  };
+
+  const openSidebar = () => {
+    sidebar?.classList.add('open');
+    backdrop?.classList.add('open');
+    mobileToggle?.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('docs-nav-open');
+  };
 
   switcherBtn?.addEventListener('click', () => {
     switcherBtn.classList.toggle('open');
     dropdown?.classList.toggle('open');
+  });
+
+  mobileToggle?.addEventListener('click', () => {
+    if (sidebar?.classList.contains('open')) {
+      closeSidebar();
+      return;
+    }
+    openSidebar();
+  });
+
+  mobileClose?.addEventListener('click', closeSidebar);
+  backdrop?.addEventListener('click', closeSidebar);
+
+  sidebarLinks?.forEach((link) => {
+    link.addEventListener('click', () => {
+      closeSidebar();
+    });
   });
 
   document.addEventListener('click', (event) => {

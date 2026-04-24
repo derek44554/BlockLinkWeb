@@ -15,12 +15,12 @@ const copy = {
   desc: isZh
     ? 'BlockLink 是一套面向开发者和团队的工具集，帮助你快速集成、自动化工作流，让每一个模块都能无缝协作。'
     : 'BlockLink is a tool suite for developers and teams to integrate faster, automate workflows, and make every module work together seamlessly.',
-  deployLabel: isZh ? '一键部署' : 'One-Command Deploy',
   copyBtn: isZh ? '复制' : 'Copy',
   copiedBtn: isZh ? '✓ 已复制' : '✓ Copied',
   hint: isZh ? '支持 Ubuntu 20.04+ · Debian 11+ · CentOS 8+' : 'Supports Ubuntu 20.04+ · Debian 11+ · CentOS 8+',
   apps: isZh ? '生态 App' : 'Ecosystem Apps',
   devs: isZh ? '开发者' : 'Developers',
+  copyCompact: isZh ? '复制' : 'Copy',
 };
 ---
 
@@ -41,12 +41,22 @@ const copy = {
     </p>
     <div class="deploy-wrap">
       <div class="deploy-box">
-        <span class="deploy-label">{copy.deployLabel}</span>
         <div class="deploy-command">
           <span class="prompt">$</span>
-          <code id="deploy-cmd">bash &lt;(curl -fsSL https://raw.githubusercontent.com/derek44554/block_shell/main/start.sh)</code>
+          <div class="deploy-scroll" aria-label={isZh ? '命令滚动区域' : 'Command scroll area'}>
+            <code id="deploy-cmd">bash &lt;(curl -fsSL https://raw.githubusercontent.com/derek44554/block_shell/main/start.sh)</code>
+          </div>
         </div>
-        <button class="copy-btn" id="copy-btn" data-copy-label={copy.copyBtn} data-copied-label={copy.copiedBtn}>{copy.copyBtn}</button>
+        <button
+          class="copy-btn"
+          id="copy-btn"
+          data-copy-label={copy.copyBtn}
+          data-copy-compact={copy.copyCompact}
+          data-copied-label={copy.copiedBtn}
+          aria-label={copy.copyBtn}
+        >
+          {copy.copyBtn}
+        </button>
       </div>
       <p class="deploy-hint">{copy.hint}</p>
     </div>
@@ -111,6 +121,7 @@ const copy = {
   .hero-content {
     position: relative;
     max-width: 760px;
+    width: 100%;
     text-align: center;
   }
   .badge {
@@ -166,38 +177,37 @@ const copy = {
     width: 100%;
     min-width: 0;
   }
-  .deploy-label {
-    padding: 0 1rem;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: #fff;
-    background: rgba(108, 99, 255, 0.5);
-    white-space: nowrap;
-    letter-spacing: 0.04em;
-    flex-shrink: 0;
-  }
   .deploy-command {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 0.5rem;
     padding: 0 1.25rem;
     height: 48px;
     flex: 1;
     min-width: 0;
+    overflow: hidden;
+    text-align: left;
+  }
+  .deploy-scroll {
+    flex: 1;
+    min-width: 0;
     overflow-x: auto;
+    overflow-y: hidden;
     scrollbar-width: thin;
     scrollbar-color: rgba(108, 99, 255, 0.4) transparent;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+    overscroll-behavior-x: contain;
+    text-align: left;
   }
-  .deploy-command::-webkit-scrollbar {
+  .deploy-scroll::-webkit-scrollbar {
     height: 3px;
   }
-  .deploy-command::-webkit-scrollbar-track {
+  .deploy-scroll::-webkit-scrollbar-track {
     background: transparent;
   }
-  .deploy-command::-webkit-scrollbar-thumb {
+  .deploy-scroll::-webkit-scrollbar-thumb {
     background: rgba(108, 99, 255, 0.4);
     border-radius: 2px;
   }
@@ -208,11 +218,14 @@ const copy = {
     user-select: none;
     flex-shrink: 0;
   }
-  .deploy-command code {
+  .deploy-scroll code {
     font-family: 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
     font-size: 0.9rem;
     color: #e8e8f0;
     white-space: nowrap;
+    display: inline-block;
+    min-width: max-content;
+    text-align: left;
   }
   .copy-btn {
     height: 48px;
@@ -227,6 +240,7 @@ const copy = {
     transition: background 0.2s, color 0.2s;
     white-space: nowrap;
     flex-shrink: 0;
+    min-width: 64px;
   }
   .copy-btn:hover { background: rgba(108,99,255,0.3); color: #fff; }
   .deploy-hint {
@@ -261,29 +275,121 @@ const copy = {
     background: var(--color-border);
   }
 
+  @media (max-width: 1024px) {
+    .deploy-box {
+      border-radius: 10px;
+    }
+    .deploy-command {
+      height: 46px;
+      padding: 0 0.85rem;
+    }
+    .deploy-scroll code {
+      font-size: 0.82rem;
+    }
+    .copy-btn {
+      min-width: 58px;
+      height: 46px;
+      padding: 0 0.8rem;
+      font-size: 0.76rem;
+    }
+  }
+
   @media (max-width: 768px) {
     .hero { padding-top: 7rem; }
     .hero-stats { gap: 1rem; }
-    .deploy-label,
-    .copy-btn { font-size: 0.75rem; padding: 0 0.8rem; }
-    .deploy-command { padding: 0 0.75rem; }
-    .deploy-command code { font-size: 0.78rem; }
+    .deploy-wrap {
+      max-width: 100%;
+    }
+    .deploy-box {
+      display: flex;
+      align-items: stretch;
+      border-radius: 10px;
+    }
+    .deploy-command {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 0;
+      height: 46px;
+      padding: 0 0.85rem;
+      overflow: hidden;
+    }
+    .deploy-scroll code {
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+    .copy-btn {
+      width: auto;
+      min-width: 72px;
+      height: 46px;
+      padding: 0 0.9rem;
+      font-size: 0.75rem;
+      border-top: none;
+      border-left: 1px solid rgba(108, 99, 255, 0.25);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .hero {
+      padding-inline: 1rem;
+    }
+    .deploy-command {
+      height: 44px;
+      padding: 0 0.75rem;
+    }
+    .deploy-scroll code {
+      font-size: 0.74rem;
+    }
+    .copy-btn {
+      min-width: 56px;
+      height: 44px;
+      padding: 0 0.75rem;
+      font-size: 0.72rem;
+    }
+    .deploy-hint {
+      text-align: center;
+      padding-inline: 0.5rem;
+    }
   }
 </style>
 
 <script>
   const copyBtn = document.getElementById('copy-btn');
   const deployCmd = document.getElementById('deploy-cmd');
+  const deployScroll = document.querySelector('.deploy-scroll');
+  const compactMedia = window.matchMedia('(max-width: 480px)');
+  const desktopNarrowMedia = window.matchMedia('(max-width: 1024px)');
+
+  const updateCopyLabel = () => {
+    if (!copyBtn) return;
+    const isCopied = copyBtn.dataset.state === 'copied';
+    if (isCopied) return;
+    const compactLabel = copyBtn.dataset.copyCompact ?? copyBtn.dataset.copyLabel ?? 'Copy';
+    const fullLabel = copyBtn.dataset.copyLabel ?? 'Copy';
+    copyBtn.textContent = compactMedia.matches ? compactLabel : fullLabel;
+  };
+
+  updateCopyLabel();
+  compactMedia.addEventListener('change', updateCopyLabel);
+  desktopNarrowMedia.addEventListener('change', () => {
+    if (!(deployScroll instanceof HTMLElement)) return;
+    deployScroll.scrollLeft = 0;
+  });
+  if (deployScroll instanceof HTMLElement) {
+    deployScroll.scrollLeft = 0;
+  }
 
   copyBtn?.addEventListener('click', async () => {
     try {
       const cmd = deployCmd?.textContent ?? '';
       await navigator.clipboard.writeText(cmd);
       const copiedLabel = copyBtn.dataset.copiedLabel ?? '✓ Copied';
-      const copyLabel = copyBtn.dataset.copyLabel ?? 'Copy';
+      copyBtn.dataset.state = 'copied';
       copyBtn.textContent = copiedLabel;
       setTimeout(() => {
-        copyBtn.textContent = copyLabel;
+        if (!copyBtn) return;
+        delete copyBtn.dataset.state;
+        updateCopyLabel();
       }, 1800);
     } catch {
       // Ignore clipboard errors on unsupported environments.

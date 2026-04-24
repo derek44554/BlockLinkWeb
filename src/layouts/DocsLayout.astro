@@ -50,8 +50,13 @@ const docsTitleSuffix = locale === 'zh' ? 'BlockLink 文档' : 'BlockLink Docs';
   .doc-main {
     flex: 1;
     min-width: 0;
+    width: 100%;
     padding: 3rem 4rem;
     max-width: 860px;
+  }
+
+  .doc-content {
+    min-width: 0;
   }
 
   .prose :global(h1) {
@@ -81,6 +86,7 @@ const docsTitleSuffix = locale === 'zh' ? 'BlockLink 文档' : 'BlockLink Docs';
     color: var(--color-muted);
     line-height: 1.8;
     margin-bottom: 1rem;
+    overflow-wrap: anywhere;
   }
   .prose :global(a) {
     color: var(--color-primary-light);
@@ -101,6 +107,8 @@ const docsTitleSuffix = locale === 'zh' ? 'BlockLink 文档' : 'BlockLink Docs';
     border-radius: 12px;
     padding: 1.25rem 1.5rem;
     overflow-x: auto;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
     margin: 1.25rem 0;
   }
   .prose :global(pre code) {
@@ -112,6 +120,9 @@ const docsTitleSuffix = locale === 'zh' ? 'BlockLink 文档' : 'BlockLink Docs';
   }
   .prose :global(table) {
     width: 100%;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
     border-collapse: collapse;
     margin: 1.25rem 0;
     font-size: 0.875rem;
@@ -136,6 +147,13 @@ const docsTitleSuffix = locale === 'zh' ? 'BlockLink 文档' : 'BlockLink Docs';
     line-height: 1.8;
   }
   .prose :global(li) { margin-bottom: 0.25rem; }
+  .prose :global(img),
+  .prose :global(video),
+  .prose :global(iframe),
+  .prose :global(svg) {
+    max-width: 100%;
+    height: auto;
+  }
   .prose :global(blockquote) {
     border-left: 3px solid var(--color-primary);
     padding-left: 1rem;
@@ -150,7 +168,33 @@ const docsTitleSuffix = locale === 'zh' ? 'BlockLink 文档' : 'BlockLink Docs';
   }
 
   @media (max-width: 768px) {
-    .sidebar { display: none; }
-    .doc-main { padding: 2rem 1.5rem; }
+    .docs-root {
+      flex-direction: column;
+      min-height: auto;
+    }
+
+    .doc-main {
+      padding: 1.5rem 1rem 2.5rem;
+      max-width: none;
+    }
+
+    .prose :global(h1) {
+      font-size: 1.75rem;
+    }
+
+    .prose :global(h2) {
+      font-size: 1.2rem;
+    }
+
+    .prose :global(pre) {
+      padding: 1rem;
+      border-radius: 10px;
+    }
+
+    .prose :global(th),
+    .prose :global(td) {
+      min-width: 140px;
+      padding: 0.55rem 0.75rem;
+    }
   }
 </style>
