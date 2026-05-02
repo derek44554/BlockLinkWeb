@@ -8,6 +8,21 @@ order: 1
 
 Use a single command to complete full deployment of a BlockLink node on your server.
 
+## Deployment Tutorial Video
+
+If this is your first deployment, watch the full tutorial first. It walks through server preparation, node deployment, and startup verification step by step.
+
+<div style="margin: 1.25rem 0 2rem; overflow: hidden; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-surface);">
+  <iframe
+    src="https://player.bilibili.com/player.html?bvid=BV1E9oLBDEuB&autoplay=0"
+    title="BlockLink deployment tutorial video"
+    allowfullscreen
+    style="display: block; width: 100%; aspect-ratio: 16 / 9; height: auto; border: 0;"
+  ></iframe>
+</div>
+
+If the embedded video does not load, open it directly on Bilibili: [BlockLink deployment tutorial](https://www.bilibili.com/video/BV1E9oLBDEuB).
+
 ## One-command Deployment
 
 ```bash
